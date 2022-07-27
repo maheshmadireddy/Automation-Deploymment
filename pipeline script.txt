@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+        environment {
+        PATH = "$PATH:/opt/apache-maven-3.8.2/bin"
+    }
+
+    stages{
+        stage("git"){
+            steps {
+              git 'https://github.com/ravdy/hello-world.git'
+            }
+        }  
+        stage("build"){
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+        stage("deploy"){
+            steps {                                                                                                    
+                sshagent(['deploy_user']) {
+             sh  "scp -o StrictHostKeyChecking=no webapp/target/webapp.war  ec2-user@35.175.186.111:/opt/tomcat/webapps"
+
+
+                
+}
+            }
+        }
+    }
+}
